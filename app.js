@@ -50,25 +50,29 @@ class Movimientos {
   }
 }
 
-function iniciarSesion(){
-  const nombre = prompt('Cual es su nombre?');
-  const tarjeta = prompt('Cual es su tarjeta?');
-
+function iniciarSesion(nombre, tarjeta){
   usuarioLogIn = usuarios.find((usuario) => usuario.nombre === nombre && usuario.tarjeta === tarjeta );
-
+  
   if(usuarioLogIn) {
-    menuDeOperaciones();
+    localStorage.setItem('usuario', nombre);
+
+    let mensajeBienvenida = document.getElementById('bienvenida');
+    let nombreUsuario = document.getElementById('nombreUsuario');
+    mensajeBienvenida.className = '';
+    nombreUsuario.innerText = nombre;
+
+    formularioIniciarSesion.className = 'hidden';
+  formularioRegistrarse.className = 'hidden';
   } else {
     alert('No se encuentra este usuario.');
   }
 }
 
-function registrarse() {
-  const nombre = prompt('Cual es su nombre?');
-  const tarjeta = prompt('Cual es su tarjeta?');
-  const dinero = parseFloat(prompt('Cuanto dinero tiene?'));
+function registrarse(nombre, tarjeta, dinero) {
 
   usuarios.push(new Usuario(nombre, tarjeta, dinero));
+  localStorage.setItem('usuarios', JSON.stringify(usuarios));
+  iniciarSesion(nombre, tarjeta);
 }
 
 //Funciones del cajero
@@ -127,56 +131,105 @@ const consultarMovimientos = () => {
 
 function seleccionarOperacionDelMenu(operacion) {
 switch (operacion) {
-    case '1':
+    case 1:
       consultarDinero();
       break;
-    case '2':
+    case 2:
       retirarDinero();
       break;
-    case '3':
+    case 3:
       depositarDinero();
       break;
-    case '4':
+    case 4:
       transferirDinero();
       break;
-    case '5':
+    case 5:
       consultarMovimientos();
       break;
-    case '6':
-      alert('Nos vemos.');
+    case 6:
+      console.log('Nos vemos.');
+      localStorage.removeItem('usuario');
       break;
     default:
-      alert('No existe la opcion ingresada, intente de nuevo.');
       break;
   }
 }
 
-function menuDeOperaciones() {
-do {
-  opcionMenu = prompt("Ingresa la operaciona a realizar. \n1. Consultar saldo. \n2. Retirar dinero. \n3. Depositar dinero. \n4. Transferir dinero. \n5. Ver movimientos. \n5. Salir.")
-  seleccionarOperacionDelMenu(opcionMenu);
-} while( opcionMenu !== '6' );
+// function menuDeOperaciones() {
+// do {
+//   opcionMenu = prompt("Ingresa la operaciona a realizar. \n1. Consultar saldo. \n2. Retirar dinero. \n3. Depositar dinero. \n4. Transferir dinero. \n5. Ver movimientos. \n5. Salir.")
+//   seleccionarOperacionDelMenu(opcionMenu);
+// } while( opcionMenu !== '6' );
+// }
+
+let formularioIniciarSesion = document.getElementById('iniciarSesion');
+let formularioRegistrarse = document.getElementById('registrarse');
+let menuDeOperaciones = document.getElementById('operaciones');
+
+let usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+let usuarioLogIn = localStorage.getItem('usuario');
+
+
+if(usuarioLogIn) {
+  let mensajeBienvenida = document.getElementById('bienvenida');
+  let nombreUsuario = document.getElementById('nombreUsuario');
+  mensajeBienvenida.className = '';
+  nombreUsuario.innerText = usuarioLogIn;
+  menuDeOperaciones.className = 'row gx-5 gy-2';
+  formularioIniciarSesion.className = 'hidden';
+  formularioRegistrarse.className = 'hidden';
+
+  let botones = document.getElementsByClassName('btn-secondary');
+  botones[0].addEventListener('click', () => seleccionarOperacionDelMenu(1));
+  botones[1].addEventListener('click', () => seleccionarOperacionDelMenu(2));
+  botones[2].addEventListener('click', () => seleccionarOperacionDelMenu(3));
+  botones[3].addEventListener('click', () => seleccionarOperacionDelMenu(4));
+  botones[4].addEventListener('click', () => seleccionarOperacionDelMenu(5));
+  botones[5].addEventListener('click', () => seleccionarOperacionDelMenu(6));
+} else {
+  formularioIniciarSesion.className = '';
+  formularioRegistrarse.className = ' mt-2';
+
+  formularioIniciarSesion.addEventListener('submit', (e) => {
+    e.preventDefault();
+    let usuario = document.getElementById('usuario').value;
+    let numeroTarjeta = document.getElementById('numeroTarjeta').value;
+
+    if(usuario != '' && numeroTarjeta != '') {
+      iniciarSesion(usuario, numeroTarjeta);
+    } else {
+      alert('Todos los datos son obligatorios');
+    }
+  });
+
+    formularioRegistrarse.addEventListener('submit', (e) => {
+    e.preventDefault();
+    let usuario = document.getElementById('usuarioRegistrado').value;
+    let numeroTarjeta = document.getElementById('numeroTarjetaRegistrado').value;
+    let dinero = document.getElementById('dinero').value;
+
+    if(usuario != '' && numeroTarjeta != '' && dinero != '') {
+      registrarse(usuario, numeroTarjeta, parseFloat(dinero));
+    } else {
+      alert('Todos los datos son obligatorios');
+    }
+  });
 }
 
-let opcionInicio = 0;
-let usuarios = [];
-let usuarioLogIn;
-let opcionMenu = 0;
-
-do {
-  opcionInicio = prompt("Bienvenido que desea hacer?\n1.Iniciar sesion.\n2.Registrarse.\n3.Salir");
-  switch(opcionInicio) {
-    case '1':
-      iniciarSesion();
-      break;
-    case '2':
-      registrarse();
-      break;
-    case '3':
-      alert('Nos vemos.');
-      break;
-    default:
-      alert('Opcion incorrecta.');
-      break;
-  }
-} while(opcionInicio != 3);
+// do {
+//   opcionInicio = prompt("Bienvenido que desea hacer?\n1.Iniciar sesion.\n2.Registrarse.\n3.Salir");
+//   switch(opcionInicio) {
+//     case '1':
+//       iniciarSesion();
+//       break;
+//     case '2':
+//       registrarse();
+//       break;
+//     case '3':
+//       alert('Nos vemos.');
+//       break;
+//     default:
+//       alert('Opcion incorrecta.');
+//       break;
+//   }
+// } while(opcionInicio != 3);
