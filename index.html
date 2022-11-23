@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <title>Document</title>
+  </head>
+
+  <body class="container">
+    <h2 id="titulo">Cajero Automatico</h2>
+    <h3 id="bienvenida" class="hidden">Bienvenido<span id="usuario"></span></h3>
+
+    <form id="iniciarSesion">
+      <div class="mb-3">
+        <label for="usuario" class="form-label">Usuario</label>
+        <input type="text" class="form-control" id="usuario" />
+      </div>
+      <div class="mb-3">
+        <label for="numeroTarjeta" class="form-label">Numero tarjeta</label>
+        <input type="password" class="form-control" id="numeroTarjeta" />
+      </div>
+      <button type="submit" class="btn btn-primary">Iniciar sesion</button>
+    </form>
+
+    <form id="registrarse">
+      <div class="mb-3">
+        <label for="usuario" class="form-label">Usuario</label>
+        <input type="text" class="form-control" id="usuario" />
+      </div>
+      <div class="mb-3">
+        <label for="numeroTarjeta" class="form-label">Numero tarjeta</label>
+        <input type="password" class="form-control" id="numeroTarjeta" />
+      </div>
+      <div class="mb-3">
+        <label for="dinero" class="form-label">Dinero en el banco</label>
+        <input type="number" class="form-control" id="dinero" />
+      </div>
+      <button type="submit" class="btn btn-primary">Registrarse</button>
+    </form>
+
+    <div class="row gx-5 gy-2">
+      <div class="col-md-6 d-grid gap-2">
+        <button class="btn btn-secondary">Consultar saldo</button>
+      </div>
+      <div class="col-md-6 d-grid gap-2">
+        <button class="btn btn-secondary">Retirar dinero</button>
+      </div>
+      <div class="col-md-6 d-grid gap-2">
+        <button class="btn btn-secondary">Depositar dinero</button>
+      </div>
+      <div class="col-md-6 d-grid gap-2">
+        <button class="btn btn-secondary">Transferir dinero</button>
+      </div>
+      <div class="col-md-6 d-grid gap-2">
+        <button class="btn btn-secondary">Consultar movimientos</button>
+      </div>
+      <div class="col-md-6 d-grid gap-2">
+        <button class="btn btn-secondary">Salir</button>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
