@@ -54,7 +54,7 @@ function iniciarSesion(nombre, tarjeta){
   usuarioLogIn = usuarios.find((usuario) => usuario.nombre === nombre && usuario.tarjeta === tarjeta );
   
   if(usuarioLogIn) {
-    localStorage.setItem('usuario', nombre);
+    localStorage.setItem('usuario', JSON.stringify(usuarioLogIn));
 
     let mensajeBienvenida = document.getElementById('bienvenida');
     let nombreUsuario = document.getElementById('nombreUsuario');
@@ -62,15 +62,15 @@ function iniciarSesion(nombre, tarjeta){
     nombreUsuario.innerText = nombre;
 
     formularioIniciarSesion.className = 'hidden';
-  formularioRegistrarse.className = 'hidden';
+    formularioRegistrarse.className = 'hidden';
   } else {
     alert('No se encuentra este usuario.');
   }
 }
 
 function registrarse(nombre, tarjeta, dinero) {
-
-  usuarios.push(new Usuario(nombre, tarjeta, dinero));
+  const newUser = new Usuario(nombre, tarjeta, dinero);
+  usuarios.push(newUser);
   localStorage.setItem('usuarios', JSON.stringify(usuarios));
   iniciarSesion(nombre, tarjeta);
 }
@@ -131,23 +131,23 @@ const consultarMovimientos = () => {
 
 function seleccionarOperacionDelMenu(operacion) {
 switch (operacion) {
-    case 1:
+    case '1':
       consultarDinero();
       break;
-    case 2:
+    case '2':
       retirarDinero();
       break;
-    case 3:
+    case '3':
       depositarDinero();
       break;
-    case 4:
+    case '4':
       transferirDinero();
       break;
-    case 5:
+    case '5':
       consultarMovimientos();
       break;
-    case 6:
-      console.log('Nos vemos.');
+    case '6':
+      alert('Nos vemos.');
       localStorage.removeItem('usuario');
       break;
     default:
@@ -155,40 +155,34 @@ switch (operacion) {
   }
 }
 
-// function menuDeOperaciones() {
-// do {
-//   opcionMenu = prompt("Ingresa la operaciona a realizar. \n1. Consultar saldo. \n2. Retirar dinero. \n3. Depositar dinero. \n4. Transferir dinero. \n5. Ver movimientos. \n5. Salir.")
-//   seleccionarOperacionDelMenu(opcionMenu);
-// } while( opcionMenu !== '6' );
-// }
-
 let formularioIniciarSesion = document.getElementById('iniciarSesion');
 let formularioRegistrarse = document.getElementById('registrarse');
 let menuDeOperaciones = document.getElementById('operaciones');
 
 let usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
-let usuarioLogIn = localStorage.getItem('usuario');
+let usuarioLogIn = JSON.parse(localStorage.getItem('usuario'));
 
 
 if(usuarioLogIn) {
   let mensajeBienvenida = document.getElementById('bienvenida');
   let nombreUsuario = document.getElementById('nombreUsuario');
+
   mensajeBienvenida.className = '';
-  nombreUsuario.innerText = usuarioLogIn;
+  nombreUsuario.innerText = usuarioLogIn.nombre;
   menuDeOperaciones.className = 'row gx-5 gy-2';
   formularioIniciarSesion.className = 'hidden';
   formularioRegistrarse.className = 'hidden';
 
-  let botones = document.getElementsByClassName('btn-secondary');
-  botones[0].addEventListener('click', () => seleccionarOperacionDelMenu(1));
-  botones[1].addEventListener('click', () => seleccionarOperacionDelMenu(2));
-  botones[2].addEventListener('click', () => seleccionarOperacionDelMenu(3));
-  botones[3].addEventListener('click', () => seleccionarOperacionDelMenu(4));
-  botones[4].addEventListener('click', () => seleccionarOperacionDelMenu(5));
-  botones[5].addEventListener('click', () => seleccionarOperacionDelMenu(6));
+  let botones = document.querySelectorAll('.btn-secondary');
+  for (const boton of botones) {
+    boton.addEventListener('click', (e) => {
+      let dataId = e.target.getAttribute('data-id');
+      seleccionarOperacionDelMenu(dataId);
+    });
+  }
 } else {
   formularioIniciarSesion.className = '';
-  formularioRegistrarse.className = ' mt-2';
+  formularioRegistrarse.className = 'mt-2';
 
   formularioIniciarSesion.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -202,7 +196,7 @@ if(usuarioLogIn) {
     }
   });
 
-    formularioRegistrarse.addEventListener('submit', (e) => {
+  formularioRegistrarse.addEventListener('submit', (e) => {
     e.preventDefault();
     let usuario = document.getElementById('usuarioRegistrado').value;
     let numeroTarjeta = document.getElementById('numeroTarjetaRegistrado').value;
@@ -215,21 +209,3 @@ if(usuarioLogIn) {
     }
   });
 }
-
-// do {
-//   opcionInicio = prompt("Bienvenido que desea hacer?\n1.Iniciar sesion.\n2.Registrarse.\n3.Salir");
-//   switch(opcionInicio) {
-//     case '1':
-//       iniciarSesion();
-//       break;
-//     case '2':
-//       registrarse();
-//       break;
-//     case '3':
-//       alert('Nos vemos.');
-//       break;
-//     default:
-//       alert('Opcion incorrecta.');
-//       break;
-//   }
-// } while(opcionInicio != 3);
