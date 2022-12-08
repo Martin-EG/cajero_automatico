@@ -28,11 +28,11 @@
 // dineroEnElBanco
 
 class Usuario {
-  constructor(nombre, tarjeta, dineroEnElBanco) {
+  constructor(nombre, tarjeta, dineroEnElBanco, movimientos) {
     this.nombre = nombre;
     this.tarjeta = tarjeta;
     this.dineroEnElBanco = parseInt(dineroEnElBanco);
-    this.movimientos = []
+    this.movimientos = movimientos || []
   }
   agregarMovimiento(movimiento) {
     this.movimientos.push(movimiento);
@@ -50,19 +50,34 @@ class Movimientos {
   }
 }
 
-function iniciarSesion(nombre, tarjeta){
-  usuarioLogIn = usuarios.find((usuario) => usuario.nombre === nombre && usuario.tarjeta === tarjeta );
-  
-  if(usuarioLogIn) {
-    localStorage.setItem('usuario', JSON.stringify(usuarioLogIn));
+async function peticionServidorParaIniciarSesion() {
+  const data = await fetch('/data.json');
+  const usuariosDB = await data.json();
+
+  return usuariosDB;
+  fetch('/data.json')
+    .then(datos => datos.json())
+    .then(usuariosDB => usuarios = [...usuariosDB]);
+
+  return usuarios;
+}
+
+async function iniciarSesion(nombre, tarjeta){
+  usuarios = await peticionServidorParaIniciarSesion();
+  const datosDeUsuario = usuarios.find((usuario) => 
+     usuario.nombre === nombre && usuario.tarjeta == tarjeta );
+
+  if(datosDeUsuario) {
+    usuarioLogIn = new Usuario(datosDeUsuario.nombre, datosDeUsuario.tarjeta, datosDeUsuario.dineroEnElBanco, datosDeUsuario.movimientos)
+    localStorage.setItem('usuario', JSON.stringify(datosDeUsuario));
 
     let mensajeBienvenida = document.getElementById('bienvenida');
     let nombreUsuario = document.getElementById('nombreUsuario');
-    mensajeBienvenida.className = '';
+    mensajeBienvenida.classList.remove('hidden');
     nombreUsuario.innerText = nombre;
 
-    formularioIniciarSesion.className = 'hidden';
-    formularioRegistrarse.className = 'hidden';
+    formularioIniciarSesion.classList.add('hidden');
+    formularioRegistrarse.classList.add('hidden');
   } else {
     alert('No se encuentra este usuario.');
   }
@@ -159,19 +174,19 @@ let formularioIniciarSesion = document.getElementById('iniciarSesion');
 let formularioRegistrarse = document.getElementById('registrarse');
 let menuDeOperaciones = document.getElementById('operaciones');
 
-let usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
-let usuarioLogIn = JSON.parse(localStorage.getItem('usuario'));
+let usuarioLS = JSON.parse(localStorage.getItem('usuario'));
+let usuarioLogIn;
 
-
-if(usuarioLogIn) {
+if(usuarioLS) {
+  usuarioLogIn = new Usuario(usuarioLS.nombre, usuarioLS.tarjeta, usuarioLS.dineroEnElBanco, usuarioLS.movimientos);
   let mensajeBienvenida = document.getElementById('bienvenida');
   let nombreUsuario = document.getElementById('nombreUsuario');
 
   mensajeBienvenida.className = '';
   nombreUsuario.innerText = usuarioLogIn.nombre;
-  menuDeOperaciones.className = 'row gx-5 gy-2';
-  formularioIniciarSesion.className = 'hidden';
-  formularioRegistrarse.className = 'hidden';
+  menuDeOperaciones.classList.remove('hidden');
+  formularioIniciarSesion.classList.add('hidden');
+  formularioRegistrarse.classList.add('hidden');
 
   let botones = document.querySelectorAll('.btn-secondary');
   for (const boton of botones) {
@@ -181,8 +196,8 @@ if(usuarioLogIn) {
     });
   }
 } else {
-  formularioIniciarSesion.className = '';
-  formularioRegistrarse.className = 'mt-2';
+  formularioIniciarSesion.classList.remove('hidden');
+  formularioRegistrarse.classList.remove('hidden');
 
   formularioIniciarSesion.addEventListener('submit', (e) => {
     e.preventDefault();

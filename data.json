@@ -1,0 +1,34 @@
+[
+  {
+    "id": 1,
+    "nombre": "Martin",
+    "tarjeta": "123456",
+    "telefono": 555225354,
+    "dinero": 5000,
+    "movimientos": []
+  },
+  {
+    "id": 2,
+    "nombre": "Mateo",
+    "tarjeta": "789654",
+    "telefono": 555244864,
+    "dinero": 15000,
+    "movimientos": []
+  },
+  {
+    "id": 3,
+    "nombre": "Ruben",
+    "tarjeta": "16325795",
+    "telefono": 684254412,
+    "dinero": 3000,
+    "movimientos": []
+  },
+  {
+    "id": 4,
+    "nombre": "Lucas",
+    "tarjeta": "498765231",
+    "telefono": 8683514524,
+    "dinero": 30000,
+    "movimientos": []
+  }
+]
